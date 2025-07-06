@@ -159,26 +159,24 @@ export default function MapView({ selectedTrip }: MapViewProps) {
           console.log("GraphHopper failed...")
         }
       }
-
+      
       // Enhanced fallback: Create a more realistic route using waypoints
       if (!routeFound) {
-        // Calculate intermediate waypoints for a more realistic path
         const startLat = selectedTrip.startLocation.lat
         const startLng = selectedTrip.startLocation.lng
         const endLat = selectedTrip.endLocation.lat
         const endLng = selectedTrip.endLocation.lng
 
-        // Create waypoints that follow major roads/highways (simplified approach)
-        const waypoints = []
-        const steps = 5 // Number of intermediate points
+        // Create waypoints using LatLng objects
+        const waypoints: L.LatLng[] = []
+        const steps = 5
 
         for (let i = 0; i <= steps; i++) {
           const ratio = i / steps
-          // Add some curvature to make it look more like a road
           const curveFactor = Math.sin(ratio * Math.PI) * 0.01
           const lat = startLat + (endLat - startLat) * ratio + curveFactor
           const lng = startLng + (endLng - startLng) * ratio + curveFactor * 0.5
-          waypoints.push([lat, lng])
+          waypoints.push(L.latLng(lat, lng)) // Using L.latLng() method
         }
 
         // Add curved route polyline
